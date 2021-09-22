@@ -1,70 +1,74 @@
 import React, { useEffect } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { readCard, updateCard, readDeck } from "../../../utils/api";
+import { useParams, useHistory } from "react-router-dom";
 import Form from "./Form";
+import { readDeck, readCard, updateCard } from "../../../utils/api";
 
 function EditCard({ deck, setDeck, card, setCard }) {
   const { deckId, cardId } = useParams();
   const history = useHistory();
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    async function fetchDeck() {
-      const decksData = await readDeck(deckId, abortController.signal);
-      setDeck(decksData);
+    async function loadDeck() {
+      const loadedDeck = await readDeck(deckId);
+      setDeck(loadedDeck);
     }
-    fetchDeck();
+    loadDeck();
   }, [deckId, setDeck]);
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    async function fetchCard() {
-      const cardData = await readCard(cardId, abortController.signal);
-      setCard(cardData);
+    async function loadCard() {
+      const cardRead = await readCard(cardId);
+      setCard(cardRead);
     }
-    fetchCard();
+    loadCard();
   }, [cardId, setCard]);
 
-  function handleChange({ target }) {
-    setCard({
-      ...card,
-      [target.name]: target.value,
-    });
+  function changeFront(event) {
+    setCard({ ...card, front: event.target.value });
   }
 
-  async function handleSubmit(event) {
+  function changeBack(event) {
+    setCard({ ...card, back: event.target.value });
+  }
+
+  function handleSave(event) {
     event.preventDefault();
-    await updateCard(card).then((response) => history.push(`/decks/${deckId}`));
+    updateCard(card).then((response) => history.push(`/decks/${deck.id}`));
+  }
+
+  function handleDone() {
+    history.push(`/decks/${deck.id}`);
   }
 
   return (
-    <>
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="breadcrumb-item">
-            <Link to={`/decks/${deckId}`}>{deck.name}</Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            Edit Card
-          </li>
-        </ol>
-      </nav>
+    <div>
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <a href="/">Home</a>
+            </li>
+            <li className="breadcrumb-item">
+              <a href={`/decks/${deck.id}`}>{deck.name}</a>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">
+              Edit Card {cardId}
+            </li>
+          </ol>
+        </nav>
+      </div>
       <div>
         <h1>Edit Card</h1>
         <Form
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          front={card.front}
-          back={card.back}
-          deck={deck}
+          changeFront={changeFront}
+          changeBack={changeBack}
+          handleSave={handleSave}
+          handleDoneCancel={handleDone}
+          cardValueFront={card.front}
+          cardValueBack={card.back}
         />
       </div>
-    </>
+    </div>
   );
 }
 

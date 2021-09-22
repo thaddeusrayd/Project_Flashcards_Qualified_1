@@ -1,30 +1,33 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { createCard, readDeck } from "../../../utils/api";
+import { useHistory, useParams } from "react-router-dom";
+import { readDeck, createCard } from "../../../utils/api";
 import Form from "./Form";
 
 function AddCard({ deck, setDeck, card, setCard }) {
+  const history = useHistory();
   const { deckId } = useParams();
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    async function fetchDeck() {
-      const decksData = await readDeck(deckId, abortController.signal);
-      setDeck(decksData);
+    async function loadDecks() {
+      const loadedDeck = await readDeck(deckId);
+      setDeck(loadedDeck);
     }
-    fetchDeck();
+    loadDecks();
   }, [deckId, setDeck]);
 
-  function handleChange({ target }) {
-    setCard({
-      deckId: deckId,
-      ...card,
-      [target.name]: target.value,
-    });
+  function changeFront(event) {
+    setCard({ ...card, front: event.target.value });
   }
 
-  function handleSubmit(event) {
+  function changeBack(event) {
+    setCard({ ...card, back: event.target.value });
+  }
+
+  function handleDone() {
+    history.push(`/decks/${deck.id}`);
+  }
+
+  function handleSave(event) {
     event.preventDefault();
     async function updateCard() {
       await createCard(deckId, card);
@@ -38,27 +41,32 @@ function AddCard({ deck, setDeck, card, setCard }) {
   }
 
   return (
-    <>
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">Home</Link>
+            <a href="/">Home</a>
           </li>
           <li className="breadcrumb-item">
-            <Link to="/">{deck.name}</Link>
+            <a href={`/decks/${deck.id}`}>{deck.name}</a>
           </li>
-          <li className="breadcrumb-item">Add Card</li>
+          <li className="breadcrumb-item active" aria-current="page">
+            Add Card
+          </li>
         </ol>
       </nav>
-      <h1>{`${deck.name}: Add Card`}</h1>
-      <Form
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        front="Front side of the card"
-        back="Back side of the card"
-        deck={deck}
-      />
-    </>
+      <div>
+        <h1>{deck.name}: Add Card</h1>
+        <Form
+          changeFront={changeFront}
+          changeBack={changeBack}
+          handleSave={handleSave}
+          handleDoneCancel={handleDone}
+          cardValueFront="Front side of the card"
+          cardValueBack="Back side of the card"
+        />
+      </div>
+    </div>
   );
 }
 
