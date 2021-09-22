@@ -51,38 +51,13 @@ function AddCard({ deck, setDeck, card, setCard }) {
         </ol>
       </nav>
       <h1>{`${deck.name}: Add Card`}</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="front">
-          Front
-          <br />
-          <textarea
-            type="text"
-            id="front"
-            name="front"
-            placeholder="Front side of card"
-            onChange={handleChange}
-            value={card.front}
-          />
-        </label>
-        <br />
-        <label htmlFor="back">
-          Back
-          <br />
-          <textarea
-            id="back"
-            name="back"
-            className="text-area"
-            placeholder="Back side of card"
-            onChange={handleChange}
-            value={card.back}
-          />
-        </label>
-        <br />
-        <Link to="/">
-          <button type="button">Done</button>
-        </Link>
-        <button type="submit">Save</button>
-      </form>
+      <Form
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        front="Front side of the card"
+        back="Back side of the card"
+        deck={deck}
+      />
     </>
   );
 }

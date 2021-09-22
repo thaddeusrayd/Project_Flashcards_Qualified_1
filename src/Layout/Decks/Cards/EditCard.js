@@ -56,37 +56,13 @@ function EditCard({ deck, setDeck, card, setCard }) {
       </nav>
       <div>
         <h1>Edit Card</h1>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="front">
-            Name
-            <br />
-            <textarea
-              id="front"
-              name="front"
-              placeholder={card.front}
-              onChange={handleChange}
-              value={card.front}
-            />
-          </label>
-          <br />
-          <label htmlFor="description">
-            Description
-            <br />
-            <textarea
-              id="back"
-              name="back"
-              className="text-area"
-              placeholder={card.back}
-              onChange={handleChange}
-              value={card.back}
-            />
-          </label>
-          <br />
-          <Link to={`/decks/${deckId}`}>
-            <button type="button">Cancel</button>
-          </Link>
-          <button type="submit">Submit</button>
-        </form>
+        <Form
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          front={card.front}
+          back={card.back}
+          deck={deck}
+        />
       </div>
     </>
   );

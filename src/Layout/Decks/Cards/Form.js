@@ -1,13 +1,8 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
-function Form({
-  changeFront,
-  changeBack,
-  handleSave,
-  handleDoneCancel,
-  cardValueFront,
-  cardValueBack,
-}) {
+function Form({ handleChange, handleSubmit, front, back, deck }) {
+  const history = useHistory();
   return (
     <form>
       <div>
@@ -17,9 +12,9 @@ function Form({
           className="form-control"
           id="front"
           placeholder="Front side of the card"
-          value={cardValueFront}
+          value={front}
           rows="3"
-          onChange={changeFront}
+          onChange={handleChange}
         />
       </div>
       <div>
@@ -28,19 +23,19 @@ function Form({
           className="form-control"
           id="back"
           placeholder="Back side of card"
-          value={cardValueBack}
+          value={back}
           rows="3"
-          onChange={changeBack}
+          onChange={handleChange}
         />
       </div>
       <button
         type="done"
         className="btn btn-secondary"
-        onClick={handleDoneCancel}
+        onClick={history.push(`/decks/${deck.id}`)}
       >
         Done
       </button>
-      <button type="submit" className="btn btn-primary" onClick={handleSave}>
+      <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
         Save
       </button>
     </form>
