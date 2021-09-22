@@ -1,48 +1,49 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
-function CardForm({
-  changeFront,
-  changeBack,
-  handleSave,
-  handleDoneCancel,
-  cardValueFront,
-  cardValueBack,
-}) {
+function CardForm({ handleSubmit, card, setCard, deck }) {
+  const history = useHistory();
+
+  function handleChange({ target }) {
+    setCard({
+      ...card,
+      [target.name]: target.value,
+    });
+  }
+
+  function handleDone() {
+    history.push(`/decks/${deck.id}`);
+  }
+
   return (
-    <form>
-      <div className="mb-3">
-        <label className="form-label">Front</label>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Front</label>
+        <br />
         <textarea
           type="text"
-          className="form-control"
-          id="front"
+          name="front"
           placeholder="Front side of the card"
-          value={cardValueFront}
+          value={card.front}
           rows="3"
-          onChange={changeFront}
+          onChange={handleChange}
         />
       </div>
-      <div className="mb-3">
-        <label className="form-label">Back</label>
+      <div>
+        <label>Back</label>
+        <br />
         <textarea
-          className="form-control"
-          id="back"
+          name="back"
           placeholder="Back side of card"
-          value={cardValueBack}
+          value={card.back}
           rows="3"
-          onChange={changeBack}
+          onChange={handleChange}
         />
       </div>
-      <button
-        type="done"
-        className="btn btn-secondary"
-        onClick={handleDoneCancel}
-      >
+      <button type="done" onClick={handleDone}>
         Done
       </button>
-      <button type="submit" className="btn btn-primary" onClick={handleSave}>
-        Save
-      </button>
+      <button type="submit">Save</button>
     </form>
   );
 }

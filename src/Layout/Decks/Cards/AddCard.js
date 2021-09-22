@@ -15,19 +15,7 @@ function AddCard({ deck, setDeck, card, setCard }) {
     loadDecks();
   }, [deckId, setDeck]);
 
-  function changeFront(event) {
-    setCard({ ...card, front: event.target.value });
-  }
-
-  function changeBack(event) {
-    setCard({ ...card, back: event.target.value });
-  }
-
-  function handleDone() {
-    history.push(`/decks/${deck.id}`);
-  }
-
-  function handleSave(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     async function updateCard() {
       await createCard(deckId, card);
@@ -58,12 +46,10 @@ function AddCard({ deck, setDeck, card, setCard }) {
       <div>
         <h1>{deck.name}: Add Card</h1>
         <Form
-          changeFront={changeFront}
-          changeBack={changeBack}
-          handleSave={handleSave}
-          handleDoneCancel={handleDone}
-          cardValueFront="Front side of the card"
-          cardValueBack="Back side of the card"
+          handleSubmit={handleSubmit}
+          card={card}
+          setCard={setCard}
+          deck={deck}
         />
       </div>
     </div>

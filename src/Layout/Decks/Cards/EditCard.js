@@ -23,21 +23,9 @@ function EditCard({ deck, setDeck, card, setCard }) {
     loadCard();
   }, [cardId, setCard]);
 
-  function changeFront(event) {
-    setCard({ ...card, front: event.target.value });
-  }
-
-  function changeBack(event) {
-    setCard({ ...card, back: event.target.value });
-  }
-
-  function handleSave(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     updateCard(card).then((response) => history.push(`/decks/${deck.id}`));
-  }
-
-  function handleDone() {
-    history.push(`/decks/${deck.id}`);
   }
 
   return (
@@ -60,12 +48,10 @@ function EditCard({ deck, setDeck, card, setCard }) {
       <div>
         <h1>Edit Card</h1>
         <Form
-          changeFront={changeFront}
-          changeBack={changeBack}
-          handleSave={handleSave}
-          handleDoneCancel={handleDone}
-          cardValueFront={card.front}
-          cardValueBack={card.back}
+          handleSubmit={handleSubmit}
+          card={card}
+          setCard={setCard}
+          deck={deck}
         />
       </div>
     </div>
